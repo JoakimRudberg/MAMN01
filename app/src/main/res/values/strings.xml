@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MyApplication1</string>
+    <string name="accelerometer">Accelerometer</string>
+    <string name="coordinate">%1$s: %2$s</string>
+    <string name="noDirection">Not moving</string>
+    <string name="oneDirection">Moving %1$s</string>
+    <string name="twoDirections">Moving %1$s and %2$s</string>
 </resources>
