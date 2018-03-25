@@ -12,17 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:fontFamily="cursive"
-        android:text="0°"
+        android:text="@string/_0"
         android:textAlignment="center"
         android:textColor="#000"
-        android:textSize="40sp"
-        android:textStyle="bold" />
+        android:textSize="60sp"
+        android:background="@drawable/newmap"/>
+
+    <ImageView
+        android:id="@+id/img_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_azimuth"
+        android:scaleType="center"
+        android:src="@drawable/worldmap" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_azimuth"
-        android:src="@drawable/newwindrose"
+        android:src="@drawable/transwindrosesmall"
         android:id="@+id/img_newwindrose"/>
+
 </RelativeLayout>

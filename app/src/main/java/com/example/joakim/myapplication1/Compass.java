@@ -1,7 +1,7 @@
 package com.example.joakim.myapplication1;
 
-
-        import android.content.DialogInterface;
+import android.content.Context;
+import android.content.DialogInterface;
         import android.hardware.Sensor;
         import android.hardware.SensorEvent;
         import android.hardware.SensorEventListener;
@@ -9,33 +9,36 @@ package com.example.joakim.myapplication1;
         import android.support.v7.app.AlertDialog;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
-        import android.support.v7.view.ContextThemeWrapper;
         import android.widget.ImageView;
         import android.widget.TextView;
+import android.os.Vibrator;
 
 public class Compass extends AppCompatActivity implements SensorEventListener {
 
+    private Vibrator v;
     ImageView compass_img;
     TextView txt_compass;
     int mAzimuth;
     private SensorManager mSensorManager;
     private Sensor mRotationV, mAccelerometer, mMagnetometer;
     boolean haveSensor = false, haveSensor2 = false;
-    float[] rMat = new float[9];
+    private float[] rMat = new float[9];
     float[] orientation = new float[3];
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        compass_img = (ImageView) findViewById(R.id.img_newwindrose);
-        txt_compass = (TextView) findViewById(R.id.txt_azimuth);
+        compass_img = findViewById(R.id.img_newwindrose);
+        txt_compass = findViewById(R.id.txt_azimuth);
 
         start();
     }
@@ -65,24 +68,28 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
 
         String where = "NW";
 
-        if (mAzimuth >= 350 || mAzimuth <= 10)
+        if (mAzimuth >= 340 || mAzimuth <= 20)
             where = "N";
-        if (mAzimuth < 350 && mAzimuth > 280)
+        if (mAzimuth < 340 && mAzimuth > 290)
             where = "NW";
-        if (mAzimuth <= 280 && mAzimuth > 260)
+        if (mAzimuth <= 290 && mAzimuth > 250)
             where = "W";
-        if (mAzimuth <= 260 && mAzimuth > 190)
+        if (mAzimuth <= 250 && mAzimuth > 200)
             where = "SW";
-        if (mAzimuth <= 190 && mAzimuth > 170)
+        if (mAzimuth <= 200 && mAzimuth > 160)
             where = "S";
-        if (mAzimuth <= 170 && mAzimuth > 100)
+        if (mAzimuth <= 160 && mAzimuth > 110)
             where = "SE";
-        if (mAzimuth <= 100 && mAzimuth > 80)
+        if (mAzimuth <= 110 && mAzimuth > 70)
             where = "E";
-        if (mAzimuth <= 80 && mAzimuth > 10)
+        if (mAzimuth <= 70 && mAzimuth > 20)
             where = "NE";
 
-
+        if (mAzimuth >= 345 || (mAzimuth <= 15)) {
+            v.vibrate(50);
+        } else {
+            v.cancel();
+        }
         txt_compass.setText(mAzimuth + "° " + where);
     }
 

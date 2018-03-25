@@ -25,8 +25,6 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accelerometer);
-
-        // Initialize variables
         TextViewX = findViewById(R.id.TextViewX);
         TextViewY = findViewById(R.id.TextViewY);
         TextViewZ = findViewById(R.id.TextViewZ);

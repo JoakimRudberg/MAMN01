@@ -5,4 +5,5 @@
     <string name="noDirection">Not moving</string>
     <string name="oneDirection">Moving %1$s</string>
     <string name="twoDirections">Moving %1$s and %2$s</string>
+    <string name="_0">0°</string>
 </resources>
