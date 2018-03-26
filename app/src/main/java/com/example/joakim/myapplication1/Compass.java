@@ -86,7 +86,7 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
             where = "NE";
 
         if (mAzimuth >= 345 || (mAzimuth <= 15)) {
-            v.vibrate(50);
+            v.vibrate(10);
         } else {
             v.cancel();
         }

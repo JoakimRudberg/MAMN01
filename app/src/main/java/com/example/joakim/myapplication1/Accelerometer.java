@@ -17,8 +17,8 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
     private boolean hasAccelerometerSensor = false;
-    private float[] lastAccelerometer = new float[3];
-    private float[] coordinatesHistory = new float[2];
+    private float[] values = new float[3];
+    private float[] preValues = new float[3];
     private String[] direction = {null, null};
 
     @Override
@@ -49,50 +49,46 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
     public void onSensorChanged(SensorEvent event) {
 
         // Adds a low pass filter to the sensor data
-        lastAccelerometer = event.values.clone();
+        // values = event.values.clone();
+        values = lowPass.lowPassFilter(event.values.clone(), values);
 
         // Get x, y and z coordinates
-        float xValue = lastAccelerometer[0];
-        float yValue = lastAccelerometer[1];
-        float zValue = lastAccelerometer[2];
-
-        // Change background color when device is flat
-        if (xValue == 0 && yValue == 0) {
-            getWindow().getDecorView().setBackgroundColor(Color.GREEN);
-        } else {
-            getWindow().getDecorView().setBackgroundColor(Color.WHITE);
-        }
-
-        // Set coordinate text views
-        TextViewX.setText(getString(R.string.coordinate, "X", Float.toString(xValue)));
-        TextViewY.setText(getString(R.string.coordinate, "Y", Float.toString(yValue)));
-        TextViewZ.setText(getString(R.string.coordinate, "Z", Float.toString(zValue)));
+        float xValue = values[0];
+        float yValue = values[1];
+        float zValue = values[2];
 
         // Calculate change in x and y coordinates
-        float xChange = coordinatesHistory[0] - xValue;
-        float yChange = coordinatesHistory[1] - yValue;
+        float xChange = preValues[0] - xValue;
+        float yChange = preValues[1] - yValue;
+        float zChange = preValues[2] - zValue;
 
         // Save history for coordinates
-        coordinatesHistory[0] = xValue;
-        coordinatesHistory[1] = yValue;
+        preValues[0] = xValue;
+        preValues[1] = yValue;
+        preValues[2] = zValue;
 
         // Check if it moved left or right
-        if (xChange > 2) {
+        if (xChange > 0.1) {
             direction[0] = "left";
-        } else if (xChange < -2) {
+        } else if (xChange < -0.1) {
             direction[0] = "right";
         } else {
             direction[0] = null;
         }
 
         // Check if it moved up or down
-        if (yChange > 2) {
+        if (yChange > 0.1) {
             direction[1] = "down";
-        } else if (yChange < -2) {
+        } else if (yChange < -0.1) {
             direction[1] = "up";
         } else {
             direction[1] = null;
         }
+
+        // Set coordinate text views
+        TextViewX.setText(getString(R.string.coordinate, "X", Float.toString(xValue)));
+        TextViewY.setText(getString(R.string.coordinate, "Y", Float.toString(yValue)));
+        TextViewZ.setText(getString(R.string.coordinate, "Z", Float.toString(zValue)));
 
         // Print direction in direction text view
         if (direction[0] != null || direction[1] != null) {
@@ -106,19 +102,16 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
         } else {
             TextViewDir.setText(getString(R.string.noDirection));
         }
-
     }
 
     private void startSensors() {
-
         // Try to create accelerometer sensor
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
         // Check if accelerometer sensor was created successfully
         if (accelerometerSensor == null) {
             noSensorsAlert();
         } else {
-            hasAccelerometerSensor = sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_UI);
+            hasAccelerometerSensor = sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -126,13 +119,11 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
      * Stops the sensors
      */
     private void stopSensors() {
-
         // Unregister sensors
         if (hasAccelerometerSensor) {
             sensorManager.unregisterListener(this, accelerometerSensor);
         }
     }
-
     /**
      * Shows no sensors alert
      */
