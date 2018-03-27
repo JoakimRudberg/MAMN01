@@ -145,7 +145,7 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
 
     private void noSensorsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setMessage("Your device does not support the desired sensors")
+        alertDialog.setMessage("Your device does not support the Accelerometer.")
                 .setCancelable(false)
                 .setNegativeButton("Close", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
