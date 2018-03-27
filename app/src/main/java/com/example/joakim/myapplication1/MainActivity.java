@@ -13,12 +13,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    /** Called when the user taps the Send button */
+    /** Called when the user taps the Compass button */
     public void testCompass(View view) {
         Intent intent = new Intent(this, Compass.class);
         startActivity(intent);
     }
-
+    /** Called when the user taps the Accelerometer button */
     public void testAccelerometer(View view) {
         Intent intent = new Intent(this, Accelerometer.class);
         startActivity(intent);

@@ -39,7 +39,6 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         compass_img = findViewById(R.id.img_newwindrose);
         txt_compass = findViewById(R.id.txt_azimuth);
-
         start();
     }
 
