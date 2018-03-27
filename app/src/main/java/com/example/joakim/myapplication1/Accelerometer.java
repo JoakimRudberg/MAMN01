@@ -2,7 +2,6 @@ package com.example.joakim.myapplication1;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,8 +17,6 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
     private Sensor accelerometerSensor;
     private boolean hasAccelerometerSensor = false;
     private float[] values = new float[3];
-    private float[] preValues = new float[3];
-    private String[] direction = {null, null};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,62 +45,48 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        // Adds a low pass filter to the sensor data
-        // values = event.values.clone();
-        values = lowPass.lowPassFilter(event.values.clone(), values);
+        // Save sensor data via lowPassFilter.
+        values = lowPassFilter(event.values.clone(), values);
 
-        // Get x, y and z coordinates
+        // Retrieve accelerometer values.
         float xValue = values[0];
         float yValue = values[1];
         float zValue = values[2];
 
-        // Calculate change in x and y coordinates
-        float xChange = preValues[0] - xValue;
-        float yChange = preValues[1] - yValue;
-        float zChange = preValues[2] - zValue;
-
-        // Save history for coordinates
-        preValues[0] = xValue;
-        preValues[1] = yValue;
-        preValues[2] = zValue;
-
-        // Check if it moved left or right
-        if (xChange > 0.1) {
-            direction[0] = "left";
-        } else if (xChange < -0.1) {
-            direction[0] = "right";
-        } else {
-            direction[0] = null;
-        }
-
-        // Check if it moved up or down
-        if (yChange > 0.1) {
-            direction[1] = "down";
-        } else if (yChange < -0.1) {
-            direction[1] = "up";
-        } else {
-            direction[1] = null;
-        }
-
-        // Set coordinate text views
-        TextViewX.setText(getString(R.string.coordinate, "X", Float.toString(xValue)));
-        TextViewY.setText(getString(R.string.coordinate, "Y", Float.toString(yValue)));
-        TextViewZ.setText(getString(R.string.coordinate, "Z", Float.toString(zValue)));
-
-        // Print direction in direction text view
-        if (direction[0] != null || direction[1] != null) {
-            if (direction[0] != null && (direction[1] != null)) {
-                TextViewDir.setText(getString(R.string.twoDirections, direction[0], direction[1]));
-            } else if (direction[0] != null) {
-                TextViewDir.setText(getString(R.string.oneDirection, direction[0]));
-            } else if (direction[1] != null) {
-                TextViewDir.setText(getString(R.string.oneDirection, direction[1]));
+        // Sets direction of the phone based on accelerometer values
+        String direction;
+        if (xValue > 2.5) {
+            direction = "VÄNSTER";
+            if (yValue > 2.5) {
+                direction = "VÄNSTER OCH UPP";
+            } else if (yValue < -2.5) {
+                direction = "VÄNSTER OCH NER";
             }
-        } else {
-            TextViewDir.setText(getString(R.string.noDirection));
+        } else if (xValue < -2.5){
+            direction = "HÖGER";
+            if (yValue > 2.5) {
+                direction = "HÖGER OCH UPP";
+            } else if (yValue < -2.5) {
+                direction = "HÖGER OCH NER";
+            }
+        } else if (yValue > 2.5){
+            direction = "UPP";
+        } else if (yValue < -2.5){
+            direction = "NER";
+        } else{
+            direction = null;
         }
+
+        // Sets texts in TextViews.
+        TextViewX.setText(getString(R.string.coordinate, "X", Float.toString(Math.round(xValue))));
+        TextViewY.setText(getString(R.string.coordinate, "Y", Float.toString(Math.round(yValue))));
+        TextViewZ.setText(getString(R.string.coordinate, "Z", Float.toString(Math.round(zValue))));
+        TextViewDir.setText(direction);
     }
 
+    /**
+     * Stops the sensors
+     */
     private void startSensors() {
         // Try to create accelerometer sensor
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -124,6 +107,7 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
             sensorManager.unregisterListener(this, accelerometerSensor);
         }
     }
+
     /**
      * Shows no sensors alert
      */
@@ -137,6 +121,20 @@ public class Accelerometer extends AppCompatActivity implements SensorEventListe
                     }
                 });
         alertDialog.show();
+    }
+    /**
+     * Lowpassfilter. Changes a value only if the change is greater than 0.5.
+     */
+    private static float[] lowPassFilter(float[] currentValue, float[] preValue) {
+        if (preValue == null) {
+            return currentValue;
+        }
+        for ( int i=0; i<currentValue.length; i++ ) {
+            if ((currentValue[i]-preValue[i]) > 0.5 || (currentValue[i]-preValue[i]) < -0.5){
+                preValue[i] = currentValue[i];
+            }
+        }
+        return preValue;
     }
 
 }

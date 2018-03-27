@@ -2,9 +2,9 @@
     <string name="app_name">MyApplication1</string>
     <string name="accelerometer">Accelerometer</string>
     <string name="coordinate">%1$s: %2$s</string>
-    <string name="noDirection">Not moving</string>
-    <string name="oneDirection">Moving %1$s</string>
-    <string name="twoDirections">Moving %1$s and %2$s</string>
-    <string name="threeDirections">Moving %1$s and %2$s and %3$s</string>
     <string name="_0">0°</string>
+    <string name="x">X:</string>
+    <string name="y">Y:</string>
+    <string name="z">Z:</string>
+    <string name="accelerometer_values">Accelerometer values:</string>
 </resources>
